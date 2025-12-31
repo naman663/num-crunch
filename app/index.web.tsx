@@ -19,6 +19,9 @@ export default function HomeScreenWeb() {
     isErrorVisible,
     errorMsg,
     closeError,
+    showMilestoneModal,
+    milestoneCorrectCount,
+    closeMilestoneModal,
   } = useMathSession();
 
   return (
@@ -75,6 +78,58 @@ export default function HomeScreenWeb() {
             </View>
           </View>
         </Modal>
+        {showMilestoneModal && (
+        <div
+            style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 24,
+            zIndex: 9999,
+            }}
+            onClick={closeMilestoneModal}
+        >
+            <div
+            style={{
+                width: "100%",
+                maxWidth: 420,
+                backgroundColor: "white",
+                borderRadius: 16,
+                padding: 20,
+            }}
+            onClick={(e) => e.stopPropagation()}
+            >
+            <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>
+                Nice work! 🎉
+            </div>
+
+            <div style={{ fontSize: 16, marginBottom: 8 }}>
+                You’ve answered {milestoneCorrectCount} correct.
+            </div>
+
+            <button
+                onClick={closeMilestoneModal}
+                style={{
+                float: "right",
+                padding: "10px 14px",
+                borderRadius: 10,
+                border: "none",
+                backgroundColor: "#111",
+                color: "white",
+                fontSize: 16,
+                fontWeight: 600,
+                cursor: "pointer",
+                }}
+            >
+                Continue
+            </button>
+            </div>
+        </div>
+        )}
+
       </ParallaxScrollView>
     </View>
   );

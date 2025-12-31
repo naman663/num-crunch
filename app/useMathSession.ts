@@ -1,5 +1,6 @@
 // app/useMathSession.ts
 import { useMemo, useState } from "react";
+import { useGameStats } from "./useGameStats";
 
 // Represents a single multiplication question
 export type MultiplicationQuestion = {
@@ -23,8 +24,19 @@ function generateQuestion(): MultiplicationQuestion {
 
 // Shared logic hook: UI-independent math session state + submit behavior
 export function useMathSession() {
+  const { stats, total, accuracy, recordCorrect, recordIncorrect, resetStats } = useGameStats();
+
   // Store the current question
   const [question, setQuestion] = useState<MultiplicationQuestion>(() => generateQuestion());
+
+  // Display stats at increments
+  const [showMilestoneModal, setShowMilestoneModal] = useState(false);
+  const [milestoneCorrectCount, setMilestoneCorrectCount] = useState<number | null>(null);
+
+  function closeMilestoneModal() {
+    setShowMilestoneModal(false);
+    setMilestoneCorrectCount(null);
+  }
 
   // Store the user's input as a string (TextInput is string-based)
   const [answerText, setAnswerText] = useState<string>("");
@@ -60,11 +72,21 @@ export function useMathSession() {
 
     // Correct: silently advance to next question (no popup)
     if (userAnswer === correctAnswer) {
+      const nextCorrect = stats.correct + 1; // increment streak
+
+      // Congratulate user on streak of multiple of 5
+      if (nextCorrect % 5 === 0) {
+        setMilestoneCorrectCount(nextCorrect);
+        setShowMilestoneModal(true);
+      }
+
+      recordCorrect();
       setQuestion(generateQuestion());
       return;
     }
 
     // Incorrect: show modal and keep the same question
+    recordIncorrect();
     setErrorMsg("Incorrect — try again.");
     setIsErrorVisible(true);
   }
@@ -82,5 +104,12 @@ export function useMathSession() {
     isErrorVisible,
     errorMsg,
     closeError,
+    stats,
+    total,
+    accuracy,
+    resetStats,
+    showMilestoneModal, 
+    milestoneCorrectCount,
+    closeMilestoneModal,
   };
 }

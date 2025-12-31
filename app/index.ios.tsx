@@ -6,11 +6,13 @@ import {
     Pressable,
     SafeAreaView,
     StyleSheet,
+    Text,
     TextInput,
     View,
 } from "react-native";
 
 import { useMathSession } from "./useMathSession";
+
 
 // iPhone-first Home screen UI (layout only)
 export default function HomeScreenIOS() {
@@ -23,6 +25,9 @@ export default function HomeScreenIOS() {
     isErrorVisible,
     errorMsg,
     closeError,
+    showMilestoneModal,
+    milestoneCorrectCount,
+    closeMilestoneModal,
   } = useMathSession();
 
   // Used to scale text/layout depending on phone width
@@ -148,6 +153,56 @@ export default function HomeScreenIOS() {
           </View>
         </View>
       </Modal>
+      <Modal
+        visible={showMilestoneModal}
+        transparent
+        animationType="fade"
+        onRequestClose={closeMilestoneModal}
+      >
+        <View
+            style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            padding: 24,
+            }}
+        >
+            <View
+            style={{
+                width: "100%",
+                maxWidth: 420,
+                backgroundColor: "white",
+                borderRadius: 16,
+                padding: 20,
+            }}
+            >
+            <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 8 }}>
+                Nice work! 🎉
+            </Text>
+
+            <Text style={{ fontSize: 16, marginBottom: 8 }}>
+                You’ve answered {milestoneCorrectCount} correct.
+            </Text>
+
+            <Pressable
+                onPress={closeMilestoneModal}
+                style={{
+                alignSelf: "flex-end",
+                paddingVertical: 10,
+                paddingHorizontal: 14,
+                borderRadius: 10,
+                backgroundColor: "#111",
+                }}
+            >
+                <Text style={{ color: "white", fontSize: 16, fontWeight: "600" }}>
+                Continue
+                </Text>
+            </Pressable>
+            </View>
+        </View>
+        </Modal>
+
     </SafeAreaView>
   );
 }
