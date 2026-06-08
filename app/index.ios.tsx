@@ -1,14 +1,14 @@
 // app/index.ios.tsx
 import React from "react";
 import {
-    Dimensions,
-    Modal,
-    Pressable,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  Dimensions,
+  Modal,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 
 import { useMathSession } from "./useMathSession";
@@ -28,6 +28,7 @@ export default function HomeScreenIOS() {
     showMilestoneModal,
     milestoneCorrectCount,
     closeMilestoneModal,
+    displayOperator,
   } = useMathSession();
 
   // Used to scale text/layout depending on phone width
@@ -97,7 +98,7 @@ export default function HomeScreenIOS() {
             onChangeText={setAnswerText}
             placeholder="Type your answer"
             placeholderTextColor="#8A8A8A"
-            keyboardType="number-pad"
+            keyboardType="decimal-pad"
             returnKeyType="done"
             onSubmitEditing={handleSubmit} // hitting "done" submits too
           />
@@ -125,7 +126,7 @@ export default function HomeScreenIOS() {
         <View style={styles.textLayer} pointerEvents="none">
           <View style={styles.questionTextContainer}>
             <TextBlock
-              text={`${question.a} × ${question.b}`}
+              text={`${question.a} ${displayOperator} ${question.b}`}
               style={[styles.questionText, { fontSize: questionFontSize }]}
             />
           </View>

@@ -22,6 +22,7 @@ export default function HomeScreenWeb() {
     showMilestoneModal,
     milestoneCorrectCount,
     closeMilestoneModal,
+    displayOperator,
   } = useMathSession();
 
   return (
@@ -41,7 +42,7 @@ export default function HomeScreenWeb() {
           {/* Big centered multiplication question */}
           <ThemedView style={styles.questionRow}>
             <ThemedText style={styles.questionText}>
-              {question.a} × {question.b}
+              {question.a} {displayOperator} {question.b}
             </ThemedText>
           </ThemedView>
 
