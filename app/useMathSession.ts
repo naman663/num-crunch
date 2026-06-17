@@ -103,10 +103,19 @@ function generateQuestion(difficulty: Difficulty): ArithmeticQuestion {
   }
 
   // Division
+  // result is always a whole number
   if (operator === '/') {
+    const denominator = randInt(1, 9);
+
+    const minAnswer = Math.ceil(range.min / denominator);
+    const maxAnswer = Math.floor(range.max / denominator);
+
+    const answer = randInt(minAnswer, maxAnswer);
+    const numerator = answer * denominator;
+
     return {
-      a: x,
-      b: randInt(1,9),
+      a: numerator,
+      b: denominator,
       operator,
       questionType: "arithmetic",
     };
@@ -188,18 +197,38 @@ function generateVariableQuestion(operator: ArithmeticQuestion["operator"]): Ari
     };
   }
 
-  // Division: build equation so x is always a whole number answer
+  // Division: build equation so var answer and right side res are whole numbers
+  // Handle cases of x / b and a / x
+  const result = randInt(1, 100);
+
+  if (variablePos === 'a') {
+    const b = randInt(1, 9);
+    const x = result * b;
+
+    // x / b = result
+    return {
+      a: x,
+      b,
+      operator,
+      questionType: "variable",
+      variablePos,
+      variableAnswer: x,
+      result,
+    };
+  }
+
+  // a / x = result
+  const x = randInt(1, 9);
+  const a = result * x;
+
   return {
-    a: variablePos === "a" ? variableAnswer : variableAnswer * otherNumber,
-    b: variablePos === "b" ? variableAnswer : otherNumber,
+    a,
+    b: x,
     operator,
     questionType: "variable",
     variablePos,
-    variableAnswer,
-    result:
-      variablePos === "a"
-        ? variableAnswer / otherNumber
-        : otherNumber,
+    variableAnswer: x,
+    result,
   };
 }
 
