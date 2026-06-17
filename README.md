@@ -4,7 +4,7 @@ Num Crunch is a lightweight mental-math training application designed for fast a
 
 Questions are continuously generated with randomized operations and randomized difficulty levels to create a varied training experience.
 
-This application is meant for the iphone experience (haven't applied this to the android just yet!!)
+Deployed with vercel, this application is meant for the iphone experience for now.
 
 ## Current Functionality
 
@@ -32,12 +32,11 @@ This application is meant for the iphone experience (haven't applied this to the
 
 - Separate iOS and Web layouts
 
-- Enter/Done key submits answers without requiring button presses
-
 ## Tech Stack
 - React Native
 - Expo
 - TypeScript
+- Vercel
 
 ## Running the App Locally - bash
 npm install
