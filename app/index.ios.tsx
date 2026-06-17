@@ -29,6 +29,7 @@ export default function HomeScreenIOS() {
     milestoneCorrectCount,
     closeMilestoneModal,
     displayOperator,
+    questionText,
   } = useMathSession();
 
   // Used to scale text/layout depending on phone width
@@ -126,18 +127,14 @@ export default function HomeScreenIOS() {
         <View style={styles.textLayer} pointerEvents="none">
           <View style={styles.questionTextContainer}>
             <TextBlock
-              text={`${question.a} ${displayOperator} ${question.b}`}
+              text={`${questionText}`}
               style={[styles.questionText, { fontSize: questionFontSize }]}
             />
-          </View>
-
-          <View style={styles.buttonTextContainer}>
-            <TextBlock text="Submit" style={styles.buttonText} />
           </View>
         </View>
       </View>
 
-      {/* Incorrect-answer Modal */}
+      {/* Incorrect- answer Modal */}
       <Modal
         visible={isErrorVisible}
         transparent

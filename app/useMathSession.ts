@@ -7,6 +7,12 @@ export type ArithmeticQuestion = {
   a: number;
   b: number;
   operator: "+" | "-" | "*" | "/";
+  questionType: "arithmetic" | "variable";
+
+  // For variable questions only
+  variablePos?: "a" | "b";
+  result?: number;
+  variableAnswer?: number;
 };
 
 // Represents difficulty level selected for session
@@ -47,6 +53,12 @@ function getNumberRange(operator: ArithmeticQuestion["operator"], difficulty: Di
   return {min: 100, max: 1000};
 }
 
+function getRandomQuestionType(): ArithmeticQuestion["questionType"] {
+  const qTypes: ArithmeticQuestion["questionType"][] = ["arithmetic", "variable"];
+  
+  return qTypes[randInt(0, qTypes.length - 1)];
+}
+
 type ArithmeticOperator = "+" | "-" | "*" | "/";
 
 // Randomly selects arith. operator
@@ -67,6 +79,13 @@ function randInt(min: number, max: number): number {
 function generateQuestion(difficulty: Difficulty): ArithmeticQuestion {
   // Randomly choose operator
   const operator = getRandomOperator();
+  // Randomly choose question type 
+  const questionType = getRandomQuestionType();
+
+  if (questionType === 'variable') {
+    return generateVariableQuestion(operator);
+  }
+  
   // Get number ranges
   const range = getNumberRange(operator, difficulty);
 
@@ -79,6 +98,7 @@ function generateQuestion(difficulty: Difficulty): ArithmeticQuestion {
       a: Math.max(x, y),
       b: Math.min(x, y),
       operator,
+      questionType: "arithmetic",
     };
   }
 
@@ -88,6 +108,7 @@ function generateQuestion(difficulty: Difficulty): ArithmeticQuestion {
       a: x,
       b: randInt(1,9),
       operator,
+      questionType: "arithmetic",
     };
   }
   
@@ -95,19 +116,107 @@ function generateQuestion(difficulty: Difficulty): ArithmeticQuestion {
       a: x,
       b: y,
       operator,
+      questionType: "arithmetic",
     };
 }
 
+// Generates a variable-solving question using whole-number values from 1–100
+function generateVariableQuestion(operator: ArithmeticQuestion["operator"]): ArithmeticQuestion {
+  // Randomly decide whether x should be the first number or second number
+  const variablePos = randInt(0, 1) === 0 ? "a" : "b";
+
+  // Generate the hidden answer for x
+  const variableAnswer = randInt(1, 100);
+
+  // Generate the other visible number
+  const otherNumber = randInt(1, 100);
+
+  // Addition: x + b = result OR a + x = result
+  if (operator === "+") {
+    return {
+      a: variablePos === "a" ? variableAnswer : otherNumber,
+      b: variablePos === "b" ? variableAnswer : otherNumber,
+      operator,
+      questionType: "variable",
+      variablePos,
+      variableAnswer,
+      result: variableAnswer + otherNumber,
+    };
+  }
+
+  // Subtraction: keep values simple, whole-number, and non-negative
+  if (operator === "-") {
+    if (variablePos == "a") {
+      const b = randInt(1, variableAnswer);
+
+      // Case 1: x - b = result
+      return {
+        a: variableAnswer,
+        b,
+        operator,
+        questionType: "variable",
+        variablePos,
+        variableAnswer,
+        result: variableAnswer - b,
+      };
+    }
+
+    const a = randInt(variableAnswer, 100);
+
+    // Case 2: a - x = result
+    return {
+      a,
+      b: variableAnswer,
+      operator,
+      questionType: "variable",
+      variablePos,
+      variableAnswer,
+      result: a - variableAnswer,
+    };
+  }
+
+  // Multiplication: x * b = result OR a * x = result
+  if (operator === "*") {
+    return {
+      a: variablePos === "a" ? variableAnswer : otherNumber,
+      b: variablePos === "b" ? variableAnswer : otherNumber,
+      operator,
+      questionType: "variable",
+      variablePos,
+      variableAnswer,
+      result: variableAnswer * otherNumber,
+    };
+  }
+
+  // Division: build equation so x is always a whole number answer
+  return {
+    a: variablePos === "a" ? variableAnswer : variableAnswer * otherNumber,
+    b: variablePos === "b" ? variableAnswer : otherNumber,
+    operator,
+    questionType: "variable",
+    variablePos,
+    variableAnswer,
+    result:
+      variablePos === "a"
+        ? variableAnswer / otherNumber
+        : otherNumber,
+  };
+}
+
 function getCorrectAnswer(question: ArithmeticQuestion): number {
+  // Variable questions 
+  if (question.questionType === "variable") {
+    return question.variableAnswer ?? 0;
+  }
   // Addition
   if (question.operator === "+") {
     return question.a + question.b;
   }
-
+  // Subtraction
   if (question.operator === "-") {
     return question.a - question.b;
   }
-
+  // Multiplication
   if (question.operator === "*") {
     return question.a * question.b;
   }
@@ -116,11 +225,22 @@ function getCorrectAnswer(question: ArithmeticQuestion): number {
   return question.a / question.b;
 }
 
-function getDisplayOperator(operator: ArithmeticQuestion["operator"]): string {
-  if (operator === "*") {
-    return "x";
+function getQuestionText(question: ArithmeticQuestion, displayOperator: string): string {
+  // normal arith. question
+  if (question.questionType === "arithmetic") {
+    return `${question.a} ${displayOperator} ${question.b}`;
   }
 
+  // Variable question with x on left side (ex: x + 8 = 23)
+  if (question.variablePos === "a") {
+    return `x ${displayOperator} ${question.b} = ${question.result}`;
+  }
+
+  // x on right side
+  return `${question.a} ${displayOperator} x = ${question.result}`;
+}
+
+function getDisplayOperator(operator: ArithmeticQuestion["operator"]): string {
   if (operator === "/") {
     return "÷";
   }
@@ -230,6 +350,7 @@ export function useMathSession() {
     showMilestoneModal, 
     milestoneCorrectCount,
     closeMilestoneModal,
+    questionText: getQuestionText(question, getDisplayOperator(question.operator)),
     displayOperator: getDisplayOperator(question.operator),
   };
 }

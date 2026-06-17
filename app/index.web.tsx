@@ -1,12 +1,8 @@
 // app/index.web.tsx
 import React from "react";
-import { Modal, Pressable, StyleSheet, TextInput, View } from "react-native";
-
-import ParallaxScrollView from "@/components/parallax-scroll-view";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-
+import { Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useMathSession } from "./useMathSession";
+
 
 // Web-specific Home screen UI (keeps the "computer view" look)
 export default function HomeScreenWeb() {
@@ -23,42 +19,41 @@ export default function HomeScreenWeb() {
     milestoneCorrectCount,
     closeMilestoneModal,
     displayOperator,
+    questionText,
   } = useMathSession();
 
   return (
     // Use a plain View to force a dark background regardless of theme behavior
     <View style={styles.screen}>
-      <ParallaxScrollView
-        headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-        // Put the title in the blue header area
-        headerImage={
-          <ThemedView style={styles.header}>
-            <ThemedText style={styles.headerTitle}>Num Crunch</ThemedText>
-          </ThemedView>
-        }
-      >
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}> Num Crunch</Text>
+        </View>
         {/* Main centered content */}
-        <ThemedView style={styles.content}>
+        <View style={styles.content}>
           {/* Big centered multiplication question */}
-          <ThemedView style={styles.questionRow}>
-            <ThemedText style={styles.questionText}>
-              {question.a} {displayOperator} {question.b}
-            </ThemedText>
-          </ThemedView>
+          <View style={styles.questionRow}>
+            <Text style={styles.questionText}>
+              {questionText}
+            </Text>
+          </View>
 
           {/* Input + submit button on the same row */}
-          <ThemedView style={styles.answerRow}>
+          <View style={styles.answerRow}>
             <TextInput
               style={styles.input}
               value={answerText}
               onChangeText={setAnswerText}
               placeholder="Type your answer"
               placeholderTextColor="#888"
-              keyboardType="number-pad"
+              keyboardType="decimal-pad"
+              returnKeyType="done"
               onSubmitEditing={handleSubmit}
             />
-          </ThemedView>
-        </ThemedView>
+            <Pressable onPress={handleSubmit} style={styles.submitButton}>
+              <Text style={styles.submitButtonText}>Submit</Text>
+            </Pressable>
+          </View>
+        </View>
 
         {/* Incorrect-answer Modal (web will render this as an overlay) */}
         <Modal
@@ -69,12 +64,12 @@ export default function HomeScreenWeb() {
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalCard}>
-              <ThemedText type="defaultSemiBold" style={styles.modalMessage}>
+              <Text style={styles.modalMessage}>
                 {errorMsg}
-              </ThemedText>
+              </Text>
 
               <Pressable style={styles.modalCloseButton} onPress={closeError}>
-                <ThemedText type="defaultSemiBold">Close</ThemedText>
+                <Text>Close</Text>
               </Pressable>
             </View>
           </View>
@@ -131,8 +126,7 @@ export default function HomeScreenWeb() {
         </div>
         )}
 
-      </ParallaxScrollView>
-    </View>
+      </View>
   );
 }
 
@@ -188,27 +182,20 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 900,
     gap: 12,
+    flexWrap: "wrap",
+    justifyContent: "center",
   },
 
   // Input field
   input: {
     flex: 1,
+    minWidth: 260,
+    maxWidth: 700,
     borderWidth: 1,
     borderColor: "#2A2F35",
     borderRadius: 14,
     padding: 12,
     color: "white",
-    backgroundColor: "#0B0F14",
-  },
-
-  // Submit button
-  button: {
-    borderWidth: 1,
-    borderColor: "#2A2F35",
-    borderRadius: 14,
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    alignItems: "center",
     backgroundColor: "#0B0F14",
   },
 
@@ -247,4 +234,19 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     alignItems: "center",
   },
+
+  // Submit button area
+  submitButton: {
+  backgroundColor: "#ffffff",
+  paddingHorizontal: 16,
+  paddingVertical: 12,
+  borderRadius: 8,
+  marginLeft: 10,
+},
+
+// Submit button text
+submitButtonText: {
+  color: "#000000",
+  fontWeight: "600",
+},
 });
