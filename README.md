@@ -2,9 +2,7 @@
 
 Num Crunch is a lightweight mental-math training application designed for fast arithmetic practice across addition, subtraction, multiplication, and division.
 
-Questions are continuously generated with randomized operations and randomized difficulty levels to create a varied training experience.
-
-Deployed with vercel, this application is meant for the iphone experience for now.
+Questions are continuously generated with randomized operations and randomized difficulty levels to create a varied training experience. The application is optimized for iPhone and Web usage and is deployed through Vercel for browser-based access.
 
 ## Current Functionality
 
@@ -14,10 +12,55 @@ Deployed with vercel, this application is meant for the iphone experience for no
   - Multiplication
   - Division
 
-- Random difficulty assignment
-  - Easy
-  - Medium
-  - Hard
+- Variable solving
+  - x + a = b
+  - x - a = b
+  - a - x = b
+  - x × a = b
+  - x ÷ a = b
+  - a ÷ x = b
+
+## Difficulty System
+
+Each question is assigned a random difficulty level:
+
+Easy
+Medium
+Hard
+
+### Addition / Subtraction
+
+Easy: 1–12
+
+Medium: 12–100
+
+Hard: 100–1000
+
+### Multiplication
+
+Easy: 1–12
+
+Medium: 12–50
+
+Hard: 50–100
+
+### Division
+
+Numerator:
+
+Easy: 1–12
+
+Medium: 12–100
+
+Hard: 100–1000
+
+Denominator:
+
+1–9
+
+## Gameplay Features
+
+- Automatic question generation
 
 - Automatic answer validation
 
@@ -30,7 +73,7 @@ Deployed with vercel, this application is meant for the iphone experience for no
   - Incorrect answers
   - Accuracy %
 
-- Separate iOS and Web layouts
+- Separate iOS and Web layouts, mobile web dev. through Vercel
 
 ## Tech Stack
 - React Native
@@ -66,40 +109,15 @@ The function:
 
 - Generates operands based on operation-specific difficulty ranges
 
-- Prevents negative subtraction answers
+- Generates algebraic variable-solving problems
 
 - Uses denominators 1–9 for division problems
 
-## Difficulty System
+### handleSubmit()
 
-Difficulty is selected randomly for every question.
-
-### Addition / Subtraction
-
-Easy: 1–12
-
-Medium: 12–100
-
-Hard: 100–1000
-
-### Multiplication
-
-Easy: 1–12
-
-Medium: 12–50
-
-Hard: 50–100
-
-### Division
-
-Numerator:
-
-Easy: 1–12
-
-Medium: 12–100
-
-Hard: 100–1000
-
-Denominator:
-
-1–9
+Processes user answers by:
+- Comparing the submitted answer to the correct answer
+- Updating statistics
+- Triggering incorrect-answer feedback when needed
+- Triggering milestone feedback every 5 correct answers
+- Generating the next question after a correct answer
